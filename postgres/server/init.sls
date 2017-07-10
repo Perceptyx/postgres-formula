@@ -53,20 +53,14 @@ postgresql-server:
 
 # For fixing bug https://github.com/saltstack/salt/issues/16459
 {%- if grains['os'] == 'FreeBSD' %}
-
-/etc/rc.conf.d/postgresql_create:
-  file.touch:
-    - name: /etc/rc.conf.d/postgresql
-    - makedirs: true
-
 /etc/rc.conf.d/postgresql:
   file.line:
-    - content: 'postgresql_flags="-w -s -m fast -l /dev/null"'
-    - match: .*postgresql_flags=.*
-    - mode: replace
-#    - onchanges:
-#       pkg: postgresql-server
-   
+    - create: true
+    - content: "postgresql_flags='-w -s -m fast -l /dev/null'"
+    - mode: insert
+    - location: end
+    - onchanges:
+       - pkg: postgresql-server
 {%- endif %}
 
 postgresql-cluster-prepared:
