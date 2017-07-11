@@ -52,15 +52,10 @@ postgresql-server:
 {%- endif %}
 
 # For fixing bug https://github.com/saltstack/salt/issues/16459
-{%- if grains['os'] == 'FreeBSD' %}
-/etc/rc.conf.d/postgresql:
-  file.line:
-    - create: true
-    - content: "postgresql_flags='-w -s -m fast -l /dev/null'"
-    - mode: insert
-    - location: end
-    - onchanges:
-       - pkg: postgresql-server
+{%- if grains['os'] == 'FreeBSD' and salt['cmd.retcode']("sysrc postgresql_flags") %}
+postgresql_flags:
+  sysrc.managed:
+    - value: "-w -s -m fast -l /dev/null"
 {%- endif %}
 
 postgresql-cluster-prepared:
