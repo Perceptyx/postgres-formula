@@ -1,16 +1,16 @@
+{%- set suffix = '96' %}
 postgres:
   use_upstream_repo: False
-  pkg: 'postgresql96-server'
-  pkg_client: 'postgresql96-client'
+  pkg: 'postgresql{{ suffix }}-server'
+  pkg_client: 'postgresql{{ suffix }}-client'
   user: postgres
   group: postgres
   service: postgresql
-  conf_dir: {{ conf_dir }}
+  conf_dir: /var/db/postgres/data{{ suffix }}/
   pkg_libpq_dev: ''
- 
+
   prepare_cluster:
     command: /usr/local/etc/rc.d/postgresql oneinitdb
-    test: test -f {{ conf_dir }}/PG_VERSION
+    test: test -f /var/db/postgres/data{{ suffix }}/PG_VERSION
     user: root
     env: {}
-
